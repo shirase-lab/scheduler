@@ -1,0 +1,160 @@
+/* styles.css — Scheduler の全スタイル。テーマは CSS 変数で管理（ハードコード色は変数経由） */
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --primary: #3b6ef5;
+  --primary-dark: #2b57cc;
+  --border: #e3e6ee;
+  --heat-base: 59, 110, 245; /* --primary の RGB。ヒートマップ用 */
+  --success: #1a9e63;
+  --error: #d64545;
+  --mine: #ffd54a;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(20, 30, 60, 0.08), 0 6px 18px rgba(20, 30, 60, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ---- ヘッダ ---- */
+.appbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px; background: var(--surface);
+  border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10;
+}
+.brand { font-weight: 700; font-size: 18px; text-decoration: none; color: var(--text); }
+.appbar nav { display: flex; align-items: center; gap: 16px; }
+.appbar nav a { text-decoration: none; color: var(--muted); font-size: 14px; }
+.appbar nav a:hover { color: var(--primary); }
+.appbar .user { font-size: 13px; color: var(--muted); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* ---- 汎用 ---- */
+h1, h2, h3 { margin: 0 0 8px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.hint { color: var(--muted); font-size: 13px; margin: 4px 0 10px; }
+.loading { padding: 40px; text-align: center; color: var(--muted); }
+hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+button {
+  font: inherit; cursor: pointer; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+  padding: 8px 16px; border-radius: 8px; transition: 0.15s;
+}
+button:hover { border-color: var(--primary); }
+button:disabled { opacity: 0.5; cursor: default; }
+button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+button.primary:hover { background: var(--primary-dark); }
+button.ghost { background: transparent; }
+button.small { padding: 4px 10px; font-size: 13px; }
+button.big { padding: 12px 28px; font-size: 16px; }
+button.danger { color: var(--error); border-color: transparent; }
+button.danger:hover { border-color: var(--error); }
+button.icon { border: none; font-size: 22px; line-height: 1; padding: 0 6px; background: transparent; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+}
+
+/* ---- ログイン ---- */
+.login { max-width: 460px; margin: 60px auto; text-align: center; }
+.login h1 { font-size: 28px; }
+.login .primary { margin: 20px 0 10px; }
+
+/* ---- フォーム ---- */
+.form { display: flex; flex-direction: column; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.field > span { font-weight: 600; }
+.field input, .field textarea, .form input, .form textarea {
+  font: inherit; padding: 8px 10px; border: 1px solid var(--border);
+  border-radius: 8px; background: #fff; color: var(--text);
+}
+.field .hint { font-weight: 400; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.form.card { max-width: 560px; }
+
+/* 所要時間チップ */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); text-decoration: none; color: var(--text); font-size: 14px;
+}
+.chip.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ---- ダッシュボード ---- */
+.head-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.meeting-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.card.meeting { text-decoration: none; color: var(--text); display: block; }
+.card.meeting:hover { border-color: var(--primary); }
+.meeting-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.badge.collecting { background: #eef3ff; color: var(--primary); }
+.badge.confirmed { background: #e7f7ef; color: var(--success); }
+.badge.cancelled { background: #fdecec; color: var(--error); }
+
+/* ---- ダイアログ ---- */
+.overlay {
+  position: fixed; inset: 0; background: rgba(15, 20, 40, 0.4);
+  display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 100;
+  overflow: auto;
+}
+.dialog { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 520px; box-shadow: var(--shadow); }
+.dialog-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.dialog-head h2 { margin: 0; font-size: 18px; }
+.dialog .form { padding: 18px; }
+.dialog-actions { display: flex; justify-content: flex-end; margin-top: 6px; }
+
+/* ---- 打ち合わせ画面 ---- */
+.meeting-head { margin-bottom: 16px; }
+.organizer-bar { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+.meeting-body { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+@media (max-width: 820px) { .meeting-body { grid-template-columns: 1fr; } }
+
+.grid-wrap { overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.grid { display: inline-block; min-width: 100%; user-select: none; touch-action: none; }
+.grid-row { display: flex; }
+.grid-head .day-cell, .grid-head .time-cell { position: sticky; top: 0; background: var(--surface); z-index: 2; font-weight: 600; font-size: 13px; }
+.time-cell { width: 56px; min-width: 56px; padding: 2px 6px; font-size: 12px; color: var(--muted); text-align: right; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; left: 0; z-index: 1; }
+.day-cell { flex: 1; min-width: 68px; text-align: center; padding: 4px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+.slot {
+  flex: 1; min-width: 68px; height: 24px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  position: relative; cursor: pointer;
+}
+.slot:hover { outline: 1px solid var(--primary); outline-offset: -1px; }
+.slot.heat { background: rgba(var(--heat-base), calc(var(--heat, 0) * 0.75)); }
+.slot.mine { box-shadow: inset 0 0 0 2px var(--mine); }
+.slot .count { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text); pointer-events: none; }
+.grid-actions { display: flex; gap: 10px; margin-top: 12px; }
+
+/* ---- サマリ／ランキング ---- */
+.side-col { display: flex; flex-direction: column; gap: 16px; }
+.summary h3 { font-size: 15px; }
+.ranking { display: flex; flex-direction: column; gap: 6px; }
+.rank-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.rank-when { flex: 1; font-size: 13px; }
+.rank-count { font-size: 12px; color: var(--muted); }
+.rank-count.full { color: var(--success); font-weight: 700; }
+.confirmed-box .big { font-size: 18px; font-weight: 700; }
+.big { font-size: 16px; }
+
+/* ---- トースト ---- */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px);
+  background: var(--text); color: #fff; padding: 10px 18px; border-radius: 999px;
+  font-size: 14px; opacity: 0; transition: 0.3s; z-index: 200; max-width: 90vw;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--error); }

@@ -1,0 +1,29 @@
+rules_version = '2';
+// Firestore セキュリティルール。Firebase コンソール → Firestore → ルール に貼る（docs/SETUP.md 参照）。
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // ユーザー（マスター設定）＝本人のみ読み書き
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // 打ち合わせ本体
+    match /meetings/{meetingId} {
+      // 参加者はリンクを知っていれば開けるよう、ログイン済みなら読める
+      allow read: if signedIn();
+      // 作成は本人が organizer のときだけ
+      allow create: if signedIn() && request.resource.data.organizerUid == request.auth.uid;
+      // 更新・削除（確定/再収集/削除）は作成者のみ
+      allow update, delete: if signedIn() && resource.data.organizerUid == request.auth.uid;
+
+      // 各ユーザーの可否。集計のため read はログイン済みに開放、書き込みは本人分のみ
+      match /availabilities/{uid} {
+        allow read: if signedIn();
+        allow write: if signedIn() && request.auth.uid == uid;
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShiraseLab Scheduler</title>
+    <meta name="description" content="複数ユーザーの希望日時を15分単位で集めて打ち合わせ日程を確定するスケジューラ" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- 設定（ローカル・gitignore）。未作成なら config.example.js をコピーして作る -->
+    <script src="./config.js"></script>
+    <!-- Google Identity Services（カレンダー/Gmail 用アクセストークン取得） -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+  </head>
+  <body>
+    <div id="app"><div class="loading">読み込み中…</div></div>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
