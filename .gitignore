@@ -9,3 +9,6 @@ Thumbs.db
 
 # node（今回はビルド無しだが将来用）
 node_modules/
+
+# Firebase デプロイキャッシュ
+.firebase/

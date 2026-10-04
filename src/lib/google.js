@@ -1,4 +1,4 @@
-// google.js — Google API アクセストークン(GIS)取得＋カレンダー作成＋Gmail送信。 #google #calendar #gmail #oauth
+// google.js — Google API アクセストークン(GIS)取得＋カレンダー作成。 #google #calendar #oauth
 // 恒久トークン(refresh)は持たず、Google Identity Services のトークンクライアントで都度取得(初回のみ同意)。
 import { auth, CONFIG } from './firebase.js';
 
@@ -92,40 +92,4 @@ export async function createCalendarEvent(p) {
   });
 }
 
-/** UTF-8 文字列を base64url に */
-function base64url(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  bytes.forEach((b) => (bin += String.fromCharCode(b)));
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-/** 日本語件名を MIME encoded-word で */
-function encodeSubject(subject) {
-  return `=?UTF-8?B?${btoa(String.fromCharCode(...new TextEncoder().encode(subject)))}?=`;
-}
-
-/**
- * ログイン中ユーザーの Gmail から送信。
- * @param {object} p {to[], subject, body} body はプレーンテキスト
- */
-export async function sendGmail(p) {
-  const to = (p.to || []).filter(Boolean).join(', ');
-  if (!to) return null;
-  const from = auth.currentUser ? auth.currentUser.email : '';
-  const raw = [
-    `From: ${from}`,
-    `To: ${to}`,
-    `Subject: ${encodeSubject(p.subject)}`,
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset="UTF-8"',
-    'Content-Transfer-Encoding: 8bit',
-    '',
-    p.body,
-  ].join('\r\n');
-  return apiFetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ raw: base64url(raw) }),
-  });
-}
+// メール送信は mailto（メーラー起動）に一本化したため Gmail API 送信は廃止（gmail.send スコープ不要）。

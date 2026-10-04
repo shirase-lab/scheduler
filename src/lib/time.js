@@ -3,7 +3,7 @@
 
 export const STEP_MIN = 15;
 export const DURATION_OPTIONS = [15, 30, 60, 120]; // 打ち合わせダイアログの所要時間ボタン
-const WEEKDAY_JA = ['日', '月', '火', '水', '木', '金', '土'];
+export const WEEKDAY_JA = ['日', '月', '火', '水', '木', '金', '土'];
 
 /** "HH:mm" → 0時からの分 */
 export function timeToMin(t) {
@@ -46,6 +46,22 @@ export function toDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+/**
+ * 除外条件（土/日/祝）で候補日を絞り込む。
+ * @param {string[]} days           "YYYY-MM-DD" 配列
+ * @param {{excludeSat?:boolean, excludeSun?:boolean, excludeHoliday?:boolean}} opts
+ * @param {Object<string,string>} holidayMap  {"YYYY-MM-DD": 祝日名}
+ */
+export function filterDays(days, opts = {}, holidayMap = {}) {
+  return days.filter((d) => {
+    const dow = new Date(`${d}T00:00:00`).getDay();
+    if (opts.excludeSun && dow === 0) return false;
+    if (opts.excludeSat && dow === 6) return false;
+    if (opts.excludeHoliday && holidayMap[d]) return false;
+    return true;
+  });
+}
+
 /** 1日の時間帯 dayStart..dayEnd を 15分刻みの "HH:mm" 配列に。終端(dayEnd)は含めない */
 export function timeSlots(dayStart, dayEnd) {
   const out = [];
@@ -59,6 +75,32 @@ export function timeSlots(dayStart, dayEnd) {
 export function dateLabel(dateStr) {
   const d = new Date(`${dateStr}T00:00:00`);
   return `${d.getMonth() + 1}/${d.getDate()}(${WEEKDAY_JA[d.getDay()]})`;
+}
+
+/** 今日の "YYYY-MM-DD"（ローカル） */
+export function todayStr() {
+  return toDateStr(new Date());
+}
+
+/**
+ * 月間カレンダーの升目。日曜始まりで、前後月の日も埋めて 7 列 × 必要週数にする。
+ * @param {number} year
+ * @param {number} month0  0=1月 … 11=12月
+ * @returns {{dateStr, day, inMonth}[][]}  週ごとの配列
+ */
+export function monthMatrix(year, month0) {
+  const startOffset = new Date(year, month0, 1).getDay(); // 0=日
+  const daysInMonth = new Date(year, month0 + 1, 0).getDate();
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+  const cur = new Date(year, month0, 1 - startOffset);
+  const weeks = [];
+  let week = [];
+  for (let i = 0; i < totalCells; i++) {
+    week.push({ dateStr: toDateStr(cur), day: cur.getDate(), inMonth: cur.getMonth() === month0 });
+    if (week.length === 7) { weeks.push(week); week = []; }
+    cur.setDate(cur.getDate() + 1);
+  }
+  return weeks;
 }
 
 /** duration(分) を占めるのに必要な連続スロット数 */

@@ -6,6 +6,22 @@
     <title>ShiraseLab Scheduler</title>
     <meta name="description" content="複数ユーザーの希望日時を15分単位で集めて打ち合わせ日程を確定するスケジューラ" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
+
+    <!-- リンク共有時のプレビューカード（OGP / Twitter Card）。
+         ※ハッシュルーティングのため、/#/m/{id} を貼っても下記の「サイト共通」カードが出る
+            （打ち合わせ個別のカードは静的配信では不可＝SSR/関数が必要）。 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ShiraseLab Scheduler" />
+    <meta property="og:title" content="ShiraseLab Scheduler — 日程調整" />
+    <meta property="og:description" content="複数人の希望日時を15分単位で集めて、打ち合わせの日程を決めるツール。" />
+    <meta property="og:url" content="https://shiraselab-scheduler.web.app/" />
+    <meta property="og:locale" content="ja_JP" />
+    <!-- 画像付きカードにする場合: 1200×630 の PNG を用意して下2行を有効化（twitter:card も summary_large_image に）
+    <meta property="og:image" content="https://shiraselab-scheduler.web.app/og-image.png" />
+    <meta property="og:image:alt" content="ShiraseLab Scheduler" /> -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="ShiraseLab Scheduler — 日程調整" />
+    <meta name="twitter:description" content="複数人の希望日時を15分単位で集めて、打ち合わせの日程を決めるツール。" />
     <link rel="stylesheet" href="./styles.css" />
     <!-- 設定（ローカル・gitignore）。未作成なら config.example.js をコピーして作る -->
     <script src="./config.js"></script>

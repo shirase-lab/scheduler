@@ -5,9 +5,10 @@
 > ルールを変えたらメモリではなく**このファイル**を更新する。
 
 - プロジェクト: 複数ユーザーの希望日時を15分単位で集約する Web スケジューラ
-- 種別: **ビルド無しの静的サイト**（HTML + 素の ES モジュール）。GitHub Pages 配信。
-- スタック: Firebase Auth(Google) / Cloud Firestore / Google Calendar API / Gmail API / Discord Webhook
-- ローカル確認: `python -m http.server 8000`（`file://` では動かない）。設定は `config.js`（`.gitignore` 済み）。
+- 種別: **ビルド無しの静的サイト**（HTML + 素の ES モジュール）。**Firebase Hosting** 配信（`firebase deploy`）。公開URL `https://shiraselab-scheduler.web.app/`。
+- スタック: Firebase Auth(Google) / Cloud Firestore / Google Calendar API / mailto(メール) / Discord Webhook
+- ローカル確認: `python -m http.server 5000 --directory .`（`file://` では動かない）。設定は `config.js`（`.gitignore` 済み。`firebase deploy` はローカルの config.js をそのまま配信する）。
+- リポジトリ: `shirase-lab/scheduler`（GitHub）。ソース管理は GitHub、配信は Firebase Hosting（別）。
 
 ---
 
@@ -33,7 +34,7 @@
 
 ## 4. 共通化は単一経路へ通す（漏れを作らない）
 
-「共通化して」は個別修正でなく単一の共通部品/経路へ。外部連携（カレンダー/メール/Discord）は `src/lib/notify.js` の `dispatchConfirmation` に集約済み＝新しい通知はここを通す。Firestore アクセスは `src/lib/store.js` に集約＝直接 SDK を各所で叩かない。
+「共通化して」は個別修正でなく単一の共通部品/経路へ。外部連携は役割ごとに単一経路：カレンダー/Discord＝`src/lib/notify.js`、メール＝`src/lib/mailto.js`（mailto 起動）、Discord 単体＝`src/lib/discord.js`。Firestore アクセスは `src/lib/store.js` に集約＝直接 SDK を各所で叩かない。
 
 ## 5. 破壊的操作の前にバックアップ
 
@@ -58,8 +59,8 @@ UI 色は `styles.css` の CSS 変数（`--primary` 等）経由。`#RRGGBB` 直
 
 ## 10. コミット/プッシュ・デプロイの規律
 
-- **コミット/プッシュは「検証済み」かつ「ユーザーの明示指示」がある時だけ**。未検証の変更を勝手に上げない。
-- GitHub Pages 公開URLを変えたら、Firebase 承認済みドメインと OAuth の JavaScript 生成元の更新が必要（`docs/SETUP.md` §2・§3・§6）＝デプロイ作業とセット。
+- **コミット/プッシュ・`firebase deploy` は「検証済み」かつ「ユーザーの明示指示」がある時だけ**。未検証の変更を勝手に上げない。
+- 配信先（`*.web.app` や独自ドメイン）を変えたら、Firebase 承認済みドメインと OAuth の JavaScript 生成元の更新が必要（`docs/SETUP.md` §2・§3・§6）＝デプロイ作業とセット。
 - 「まだ直っていない」報告には、相手の環境や自分の推測に逃げず、まずログ/計測を仕込んで自分で再現する。
 
 ---

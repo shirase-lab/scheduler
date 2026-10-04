@@ -13,7 +13,6 @@ window.SCHEDULER_CONFIG = {
   // Google Cloud → 認証情報 → OAuth 2.0 クライアントID（ウェブ アプリケーション）
   // ※ Firebase と同じ GCP プロジェクトのもの。承認済み JavaScript 生成元に公開URLを登録すること。
   googleClientId: 'YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com',
-  // カレンダー書き込み＋Gmail送信のスコープ。メール送信が不要なら gmail.send を外す。
-  googleScopes:
-    'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/gmail.send',
+  // カレンダー書き込みスコープ。メールは mailto（メーラー起動）で送るため Gmail スコープは不要。
+  googleScopes: 'https://www.googleapis.com/auth/calendar.events',
 };
